@@ -72,6 +72,13 @@ ExecStart={{.RootABSPath}}/bin/hyperkube apiserver \
 	--service-account-key-file={{.RootABSPath}}/secrets/service-accounts.rsa \
 	--kubelet-client-certificate={{.RootABSPath}}/secrets/kubernetes.certificate \
 	--kubelet-client-key={{.RootABSPath}}/secrets/kubernetes.private_key \
+    --requestheader-client-ca-file={{.RootABSPath}}/secrets/apiserver.issuing_ca
+    --requestheader-allowed-names=aggregator,e2e
+    --requestheader-extra-headers-prefix=X-Remote-Extra-
+    --requestheader-group-headers=X-Remote-Group
+    --requestheader-username-headers=X-Remote-User
+    --proxy-client-cert-file={{.RootABSPath}}/secrets/apiserver.certificate
+    --proxy-client-key-file={{.RootABSPath}}/secrets/apiserver.private_key
 	--kubelet-https \
 	--kubelet-certificate-authority={{.RootABSPath}}/secrets/kubernetes.issuing_ca \
 	--target-ram-mb=0 \
@@ -221,6 +228,7 @@ spec:
     - --concurrent-resource-quota-syncs=2
     - --concurrent-service-syncs=1
     - --concurrent-serviceaccount-token-syncs=2
+    - --horizontal-pod-autoscaler-use-rest-clients=true
     volumeMounts:
       - name: secrets
         mountPath: /etc/secrets
